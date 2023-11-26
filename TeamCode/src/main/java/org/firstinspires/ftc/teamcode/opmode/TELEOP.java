@@ -2,15 +2,13 @@ package org.firstinspires.ftc.teamcode.opmode;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
-import com.acmerobotics.roadrunner.Twist2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.LinearSlide;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.TankDrive;
 
 @TeleOp
 public class TELEOP extends LinearOpMode {
@@ -23,6 +21,8 @@ public class TELEOP extends LinearOpMode {
         CRServo li_servo = hardwareMap.crservo.get("li_servo");
         CRServo ri_servo = hardwareMap.crservo.get("ri_servo");
 
+        LinearSlide linear_slide = new LinearSlide(hardwareMap.dcMotor.get("ls_motor"));
+
         waitForStart();
 
         while (opModeIsActive()) {
@@ -34,7 +34,8 @@ public class TELEOP extends LinearOpMode {
                     -gamepad1.right_stick_x / 3
             ));
 
-            drive.updatePoseEstimate();
+            //this drastically reduces cycle time, but we may still need to use it in future
+            //drive.updatePoseEstimate();
 
             // this controls the intake
             if (gamepad1.left_trigger > 0 || gamepad1.right_trigger > 0) {
@@ -48,10 +49,17 @@ public class TELEOP extends LinearOpMode {
                 ri_servo.setPower(0);
             }
 
-            telemetry.addData("x", drive.pose.position.x);
-            telemetry.addData("y", drive.pose.position.y);
-            telemetry.addData("heading", drive.pose.heading);
-            telemetry.update();
+            // this controls linear slide
+            if (gamepad1.dpad_up) {
+                linear_slide.manualMove(0.7);
+            } else if (gamepad1.dpad_down) {
+                linear_slide.manualMove(-0.6);
+            }  else if (gamepad1.a) {
+                linear_slide.setTarget(0);
+            } else {
+                linear_slide.moveTowardsTarget();
+            }
+
         }
     }
 }
