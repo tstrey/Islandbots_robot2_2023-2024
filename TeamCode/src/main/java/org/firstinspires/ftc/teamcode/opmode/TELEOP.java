@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.LinearSlide;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -20,6 +21,11 @@ public class TELEOP extends LinearOpMode {
         // We use the CRServo class because the intake servos are constant rotation servos
         CRServo li_servo = hardwareMap.crservo.get("li_servo");
         CRServo ri_servo = hardwareMap.crservo.get("ri_servo");
+
+        // to_servo stands for "top outtake servo", bo_servo stands for "bottom outtake servo"
+        Servo to_servo = hardwareMap.servo.get("to_servo");
+        Servo bo_servo = hardwareMap.servo.get("bo_servo");
+        Servo outtake_rotate = hardwareMap.servo.get("outtake_rotate");
 
         LinearSlide linear_slide = new LinearSlide(hardwareMap.dcMotor.get("ls_motor"));
 
@@ -51,7 +57,7 @@ public class TELEOP extends LinearOpMode {
 
             // this controls linear slide
             if (gamepad1.dpad_up) {
-                linear_slide.manualMove(0.7);
+                linear_slide.manualMove(0.8);
             } else if (gamepad1.dpad_down) {
                 linear_slide.manualMove(-0.6);
             }  else if (gamepad1.a) {
@@ -59,6 +65,11 @@ public class TELEOP extends LinearOpMode {
             } else {
                 linear_slide.moveTowardsTarget();
             }
+
+            // this controls outtake
+            to_servo.setPosition(gamepad1.x ? 0.95 : 0.85);
+            bo_servo.setPosition(gamepad1.b ? 0.3 : 0);
+            outtake_rotate.setPosition(gamepad1.y ? 0.5 : 0.925);
 
         }
     }

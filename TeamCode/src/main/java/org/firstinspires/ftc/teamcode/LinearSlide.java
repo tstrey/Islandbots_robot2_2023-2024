@@ -58,7 +58,7 @@ public class LinearSlide {
             timer.reset();
         } else {
             // TODO: use PID to maintain linear slide position even during manual control
-            motor.setPower(0.1);
+            motor.setPower(0.2);
         }
     }
 
@@ -76,7 +76,7 @@ public class LinearSlide {
         if ((motorPower > 0 && motor.getCurrentPosition() < 825) || (motorPower < 0 && motor.getCurrentPosition() > 0)) {
             motor.setPower(motorPower);
         } else {
-            motor.setPower(0.1);
+            motor.setPower(0.2);
         }
     }
 
